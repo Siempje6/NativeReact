@@ -1,78 +1,53 @@
+// app/dashboard/index.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { auth } from '../../firebase/firebaseConfig';
-import { signOut } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Dashboard() {
   const router = useRouter();
-  const [userName, setUserName] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [hourlyRate, setHourlyRate] = useState<number>(0);
+  const [workedHours, setWorkedHours] = useState<number>(0);
 
   useEffect(() => {
-    setMounted(true); // Root Layout is gemount
+    const loadData = async () => {
+      const rate = await AsyncStorage.getItem('hourlyRate');
+      setHourlyRate(rate ? parseFloat(rate) : 0);
+
+      const hoursData = await AsyncStorage.getItem('workedHours');
+      if (hoursData) {
+        const parsed: Record<string, number> = JSON.parse(hoursData);
+        const total = Object.values(parsed).reduce((acc, h) => acc + h, 0);
+        setWorkedHours(total);
+      }
+    };
+    loadData();
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return; // wacht tot mounted
-
-    const user = auth.currentUser;
-
-    if (!user) {
-      // redirect veilig uitvoeren
-      setTimeout(() => {
-        router.replace('/'); // terug naar login
-      }, 0);
-      return;
-    }
-
-    setUserName(user.displayName || user.email || 'User');
-  }, [mounted]);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      router.replace('/'); // terug naar login
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
-  if (!userName) return null; // voorkomt renderen voor user loaded
+  const monthlyEarnings = workedHours * hourlyRate;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome {userName}!</Text>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
+      <Text style={styles.title}>Dashboard</Text>
+      <Text style={styles.text}>Totaal gewerkte uren: {workedHours}</Text>
+      <Text style={styles.text}>Uurloon: €{hourlyRate.toFixed(2)}</Text>
+      <Text style={styles.text}>Verwacht salaris: €{monthlyEarnings.toFixed(2)}</Text>
+
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/calender')}>
+        <Text style={styles.buttonText}>Ga naar Kalender</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => router.push('../settings')}>
+        <Text style={styles.buttonText}>Instellingen</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#222',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    color: '#F39C12',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: '#F39C12',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  container: { flex: 1, padding: 24, backgroundColor: '#222' },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#F39C12', marginBottom: 20 },
+  text: { color: '#fff', fontSize: 18, marginBottom: 10 },
+  button: { backgroundColor: '#F39C12', padding: 15, borderRadius: 10, marginVertical: 10 },
+  buttonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
 });
