@@ -24,6 +24,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+    logo: {
+
+    },
     container: {
         width: '100%',
         height: '100%',
