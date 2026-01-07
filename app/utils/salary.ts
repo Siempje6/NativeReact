@@ -1,6 +1,6 @@
 export type DayHours = {
     date: Date;
-    hours: number;
+    hours: 50;
     isHoliday: boolean;
 }
 

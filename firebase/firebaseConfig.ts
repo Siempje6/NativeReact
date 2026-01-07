@@ -1,8 +1,9 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBHhI19bxb-lLmdVc4Yj9u_t5zX1WLVPOA", 
+  apiKey: "AIzaSyBHhI19bxb-lLmdVc4Yj9u_t5zX1WLVPOA",
   authDomain: "nativereact-85a69.firebaseapp.com",
   projectId: "nativereact-85a69",
   storageBucket: "nativereact-85a69.appspot.com",
@@ -11,4 +12,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
+export const db = getFirestore(app);
