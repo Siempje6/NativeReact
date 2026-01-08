@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Animated,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 interface Props {
@@ -77,18 +77,18 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   label: {
-    color: '#aaa',
+    color: '#F39C12',
     fontSize: 14,
     fontWeight: '600',
   },
   active: {
-    color: '#000',
+    color: '#fff',
   },
   indicator: {
     position: 'absolute',
     width: '50%',
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#F39C12',
     borderRadius: 22,
     zIndex: 1,
   },
