@@ -4,7 +4,7 @@ export default function Settings() {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>
-                Settings
+                Calendar
             </Text>
         </View>
     );

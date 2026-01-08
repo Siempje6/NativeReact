@@ -9,8 +9,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import SwitchButton from '../../components/switchbutton/switchbutton';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { calculateMonthlySalary } from '../utils/salaryUtils';
 
 export default function Dashboard() {
+  const [urenDezeMaand, setUrenDezeMaand] = useState<number>(40);
+
+  useEffect(() => {
+    const loadUren = async () => {
+      const saved = await AsyncStorage.getItem('urenDezeMaand');
+      if (saved) setUrenDezeMaand(Number(saved));
+    };
+    loadUren();
+  }, []);
+
+  const uurloon = 10.50;
+
+  const { bedrag, maandloon, vakantiegeld } = calculateMonthlySalary(urenDezeMaand, uurloon);
+
+
   const [activeTab, setActiveTab] = useState('Home');
 
   const tabs = [
@@ -104,7 +121,7 @@ export default function Dashboard() {
 
         <View style={styles.card}>
           <Text style={styles.euro}>
-            €<Text style={styles.mothlypay}> 0</Text>
+            €<Text style={styles.mothlypay}> {maandloon.toFixed(2)}</Text>
           </Text>
         </View>
       </View>
@@ -113,13 +130,13 @@ export default function Dashboard() {
         <View style={month.blocks}>
           <View style={month.monthBlockLeft}>
             <Text style={month.text}>
-              0 <Text style={month.hour}>hours</Text>
+              {urenDezeMaand.toFixed(0)} <Text style={month.hour}>hours</Text>
             </Text>
           </View>
 
           <View style={month.monthBlockRight}>
             <Text style={month.text}>
-              <Text style={month.euro}>€</Text>0
+              <Text style={month.euro}>€</Text>{uurloon.toFixed(2)}
             </Text>
           </View>
         </View>
@@ -139,19 +156,19 @@ export default function Dashboard() {
         {isLeftActive ? (
           <View style={tabsswitch.tabView}>
             <View style={tabsswitch.year}>
-              <Text style={tabsswitch.tabTitle}>Januari</Text>
+              <Text style={tabsswitch.tabTitle}>Vakantiegeld Januari</Text>
             </View>
 
             <View style={tabsswitch.months}>
               <View style={tabsswitch.hours}>
                 <Text style={month.text}>
-                  0 <Text style={month.hour}>hours</Text>
+                  {urenDezeMaand.toFixed(0)} <Text style={month.hour}>hours</Text>
                 </Text>
               </View>
 
               <View style={tabsswitch.month}>
                 <Text style={month.text}>
-                  <Text style={month.euro}>€</Text>0
+                  <Text style={month.euro}>€</Text> {vakantiegeld.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -159,19 +176,19 @@ export default function Dashboard() {
         ) : (
           <View style={tabsswitch.tabView}>
             <View style={tabsswitch.year}>
-              <Text style={tabsswitch.tabTitle}>2026</Text>
+              <Text style={tabsswitch.tabTitle}>Vakantiegeld 2026</Text>
             </View>
 
             <View style={tabsswitch.months}>
               <View style={tabsswitch.hours}>
                 <Text style={month.text}>
-                  0 <Text style={month.hour}>hours</Text>
+                  {urenDezeMaand.toFixed(0)} <Text style={month.hour}>hours</Text>
                 </Text>
               </View>
 
               <View style={tabsswitch.month}>
                 <Text style={month.text}>
-                  <Text style={month.euro}>€</Text>0
+                  <Text style={month.euro}>€</Text> {vakantiegeld.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -230,14 +247,6 @@ const navStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
     color: '#fff',
-  },
-  activeDot: {
-    position: 'absolute',
-    top: -4,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#F39C12',
   },
 });
 
