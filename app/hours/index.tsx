@@ -1,4 +1,3 @@
-// app/calendar/index.tsx
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -36,7 +35,7 @@ export default function Hours() {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Aantal uren gewerkt deze maand:</Text>
+        <Text style={styles.label}>Uren</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
